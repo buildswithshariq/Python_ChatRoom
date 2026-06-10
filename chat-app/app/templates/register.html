@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% block title %}Register - ChatBox{% endblock %}
+
+{% block head %}
+<style>
+    .auth-container {
+        max-width: 420px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+    .auth-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .auth-card h2 {
+        margin: 0 0 8px;
+        text-align: center;
+        color: #1a1a2e;
+    }
+    .auth-card .subtitle {
+        text-align: center;
+        color: #777;
+        margin-bottom: 28px;
+    }
+    .form-group {
+        margin-bottom: 18px;
+    }
+    .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 6px;
+        color: #333;
+        font-size: 0.9rem;
+    }
+    .form-group input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+    }
+    .form-group input:focus {
+        outline: none;
+        border-color: #43b76e;
+        box-shadow: 0 0 0 3px rgba(67,183,110,0.1);
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background: #43b76e;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.05rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+        margin-top: 8px;
+    }
+    .btn-submit:hover {
+        background: #36a35e;
+    }
+    .error-msg {
+        background: #fee2e2;
+        color: #991b1b;
+        padding: 10px 14px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        font-size: 0.9rem;
+        display: none;
+    }
+    .auth-link {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+    }
+    .auth-link a {
+        color: #4361ee;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <h2>Create Account</h2>
+        <p class="subtitle">Join ChatBox and start chatting</p>
+        <div class="error-msg" id="error-msg"></div>
+        <form
+            method="POST"
+            action="/auth/register"
+            id="register-form"
+        >
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required minlength="3" autocomplete="username" placeholder="Choose a username">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required autocomplete="email" placeholder="your@email.com">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password" placeholder="Min 6 characters">
+            </div>
+            <button type="submit" class="btn-submit">Create Account</button>
+        </form>
+        <script>
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('error')) {
+        const el = document.getElementById('error-msg');
+        el.textContent = params.get('error');
+        el.style.display = 'block';
+    }
+</script>
+        <p class="auth-link">Already have an account? <a href="/auth/login">Sign in</a></p>
+    </div>
+</div>
+{% endblock %}

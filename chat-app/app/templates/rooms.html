@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+{% block title %}Rooms - ChatBox{% endblock %}
+
+{% block head %}
+<style>
+    .rooms-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    .rooms-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 28px;
+        flex-wrap: wrap;
+        gap: 16px;
+    }
+    .rooms-header h2 { margin: 0; color: #1a1a2e; }
+    .btn-new-room {
+        padding: 12px 24px;
+        background: #4361ee;
+        color: #fff;
+        border: none;
+        border-radius: 12px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .btn-new-room:hover { background: #3a56d4; transform: translateY(-1px); }
+    .create-form {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        margin-bottom: 24px;
+        box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        display: none;
+    }
+    .create-form.active { display: block; }
+    .create-form h3 { margin: 0 0 16px; }
+    .form-row {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .form-row input {
+        flex: 1;
+        min-width: 180px;
+        padding: 10px 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+    }
+    .form-row input:focus { outline: none; border-color: #4361ee; }
+    .room-cards { display: grid; gap: 16px; }
+    .room-card {
+        background: #fff;
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: box-shadow 0.2s;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .room-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .room-info h3 { margin: 0 0 6px; color: #1a1a2e; }
+    .room-info h3 a { text-decoration: none; color: inherit; }
+    .room-info h3 a:hover { color: #4361ee; }
+    .room-meta { display: flex; gap: 16px; color: #888; font-size: 0.85rem; }
+    .room-desc { color: #666; margin: 6px 0 0; font-size: 0.9rem; }
+    .room-actions { display: flex; gap: 8px; }
+    .badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    .badge-joined { background: #d1fae5; color: #065f46; }
+    .badge-open { background: #e0e7ff; color: #3730a3; }
+    .empty-state { text-align: center; padding: 60px 20px; color: #888; }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 12px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="rooms-container" id="rooms-container">
+    <div class="rooms-header">
+        <h2>Chat Rooms</h2>
+        <button class="btn-new-room" onclick="document.getElementById('create-form').classList.toggle('active')">
+            + New Room
+        </button>
+    </div>
+
+    <div class="create-form" id="create-form">
+        <h3>Create a New Room</h3>
+        <form method="POST" action="/rooms">
+            <div class="form-row">
+                <input type="text" name="name" placeholder="Room name (e.g. python-dev)" required minlength="2">
+                <input type="text" name="description" placeholder="Description (optional)">
+                <button type="submit" class="btn-new-room">Create</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="room-cards">
+        {% if rooms %}
+            {% for room in rooms %}
+            <div class="room-card">
+                <div class="room-info">
+                    <h3><a href="/rooms/{{ room.id }}"># {{ room.name }}</a></h3>
+                    {% if room.description %}<p class="room-desc">{{ room.description }}</p>{% endif %}
+                    <div class="room-meta">
+                        <span>&#x1F465; {{ room.member_count }} member{{ 's' if room.member_count != 1 }}</span>
+                        <span>&#x1F4C5; {{ room.created_at.strftime('%b %d, %Y') }}</span>
+                    </div>
+                </div>
+                <div class="room-actions">
+                    {% if room.id in joined_room_ids %}
+                        <span class="badge badge-joined">&#x2713; Joined</span>
+                    {% else %}
+                        <span class="badge badge-open">Open</span>
+                    {% endif %}
+                    <form method="POST" action="/rooms/{{ room.id }}/join" style="display:inline;">
+                        <button type="submit" class="btn-new-room" style="padding:8px 18px;font-size:0.85rem;">
+                            {% if room.id in joined_room_ids %}Rejoin{% else %}Join{% endif %}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <div class="icon">&#x1F3E0;</div>
+                <h3>No rooms yet</h3>
+                <p>Create the first room to get started!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

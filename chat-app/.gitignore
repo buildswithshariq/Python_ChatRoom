@@ -1,0 +1,21 @@
+# Database
+chat.db
+*.sqlite3
+
+# Logs
+server.log
+*.log
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+env/
+venv/
+.env
+.venv/
+
+# Testing cache
+.pytest_cache/

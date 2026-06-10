@@ -1,0 +1,13 @@
+{% if members %}
+    {% for member in members %}
+    <div class="member-item">
+        <span class="online-dot {{ 'online' if member.online else 'offline' }}"></span>
+        <span style="color:#333;">{{ member.username }}</span>
+        {% if member.online %}
+            <span style="font-size:0.75rem;color:#22c55e;margin-left:auto;">online</span>
+        {% endif %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p style="color:#888;font-size:0.85rem;">No members yet.</p>
+{% endif %}
